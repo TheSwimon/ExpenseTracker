@@ -12,16 +12,20 @@ namespace ExpenseTracker.Services
     {
         private readonly ExpenseManager _expenseManager;
         private readonly Dictionary<string, Delegate> _handler;
+        private readonly CommandParser _parser;
         public CommandHandler()
         {
             _expenseManager = new ExpenseManager();
+            _parser = new CommandParser();
+
             _handler = new Dictionary<string, Delegate>()
             {
                 {"add", HandleAdd },
                 {"update", HandleUpdate },
                 {"delete", HandleDelete },
                 {"list",  HandleList},
-                {"summary", HandleSummary }
+                {"summary", HandleSummary },
+                {@"\help", LogHelp }
 
             };
         }
@@ -39,7 +43,7 @@ namespace ExpenseTracker.Services
 
 
 
-            if (_handler.TryGetValue(operation, out Delegate method))
+            if (_handler.TryGetValue(operation, out Delegate? method))
             {
                 try
                 {
@@ -62,12 +66,12 @@ namespace ExpenseTracker.Services
                 {
                     Console.WriteLine(ex.Message);
                     return false;
-                } 
+                }
                 catch (JsonException ex)
                 {
                     Console.WriteLine(ex.Message);
                     return false;
-                } 
+                }
                 catch (ArgumentException ex)
                 {
                     Console.WriteLine(ex.Message);
@@ -86,44 +90,29 @@ namespace ExpenseTracker.Services
 
         public void HandleAdd(string[] args)
         {
-            if (args.Length == 4 && args[0].ToLower() == "--description" && !String.IsNullOrWhiteSpace(args[1]) && args[2].ToLower() == "--amount" && double.TryParse(args[3], out double amount))
-            {
-                _expenseManager.Add(args[1], amount);
+            var addCommandData = _parser.ParseAdd(args, 6);
 
-                int id = _expenseManager.GetExpenseId();
-                Console.WriteLine($"Expense added successfully: {id}");
-            }
-            else
-            {
-                Console.WriteLine(@"Unrecognized command, write \help for instructions.");
-            }
+            _expenseManager.Add(addCommandData.Description, addCommandData.Category, addCommandData.Amount);
+            int id = _expenseManager.GetLastExpenseId();
+            Console.WriteLine($"Expense added successfully: {id}");
         }
 
 
         public void HandleUpdate(string[] args)
         {
-            if (args.Length == 6 && args[0].ToLower() == "--id" && int.TryParse(args[1], out int id) && args[2].ToLower() == "--description" && !string.IsNullOrEmpty(args[3]) && args[4].ToLower() == "--amount" && double.TryParse(args[5], out double amount))
-            {
-                _expenseManager.Update(id, args[3], amount);
-                Console.WriteLine($"Expense updated successfully: {id}");
-            }
-            else
-            {
-                Console.WriteLine(@"Unrecognized command, write \help for instructions.");
-            }
+            var updateCommandData = _parser.ParseUpdate(args);
+
+            _expenseManager.Update(updateCommandData.Id, updateCommandData.Description, updateCommandData.Category, updateCommandData.Amount);
+            Console.WriteLine($"Expense updated successfully: {5}");
+
         }
 
         public void HandleDelete(string[] args)
         {
-            if (args.Length == 1 && int.TryParse(args[0], out int id))
-            {
-                _expenseManager.Delete(id);
-                Console.WriteLine("Expense deleted successfully");
-            }
-            else
-            {
-                Console.WriteLine(@"Unrecognized command, write \help for instructions.");
-            }
+            var deleteCommandData = _parser.ParseDelete(args, 2);
+
+            _expenseManager.Delete(deleteCommandData.Id);
+            Console.WriteLine("Expense deleted successfully");
         }
 
         public void HandleList()
@@ -166,6 +155,11 @@ namespace ExpenseTracker.Services
                 }
                 Console.WriteLine($"Your total expenses are ${total.ToString("N2")}");
             }
+        }
+
+        private void LogHelp()
+        {
+            Console.WriteLine("\nAvailable operations: Add, Update, Delete, List details of all expenses, List summary of all expenses.\r\n\r\nExample commands:\r\nAdd entry - \"ExpenseTracker add --description \"pizza\" --category \"groceries\" --amount 20\" \r\nUpdate entry - \"ExpenseTracker update --id 9 --description \"khinkali\" --amount 25\"\r\nDelete entry - \"ExpenseTracker delete --id 8\"\r\nDetails of all expenses - \"list\"\r\nsummary of all expenses - \"summary\"\r\n\r\nGuide: \r\norder of the key-value pairs in Add command doesn't matter and all properties must be present.\r\norder of the key-value pairs in Update command doesn't matter, you have to provide at least one value to update the property, the first key-value pair must be the ID of the record.");
         }
     }
 }

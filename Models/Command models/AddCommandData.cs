@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace ExpenseTracker.Models
 {
-    public class Expense
+    public class AddCommandData
     {
-        public int Id { get; set; }
         public string Description { get; set; } = string.Empty;
-        public double Amount { get; set; }
 
         public string Category { get; set; } = string.Empty;
 
-        public DateTime CreatedAt { get; set; }
+        public int Amount { get; set; } 
     }
 }

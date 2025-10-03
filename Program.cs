@@ -6,12 +6,5 @@ using System.Text.Json;
 
 
 
-//JsonDataHandler handler = new JsonDataHandler();
-//List<Expense> expenses = handler.ExpenseContainer.Expenses;
-//ExpenseManager manager = new ExpenseManager();
-
-
-CommandHandler commandHandler = new CommandHandler();
-commandHandler.ExecuteCommand(args);
-
-
+CommandHandler handler = new CommandHandler();
+handler.ExecuteCommand(args);

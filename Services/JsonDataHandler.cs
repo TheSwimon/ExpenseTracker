@@ -1,10 +1,5 @@
 ﻿using ExpenseTracker.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ExpenseTracker.Services
 {
@@ -14,11 +9,11 @@ namespace ExpenseTracker.Services
 
         public JsonDataHandler()
         {
-            ExpenseContainer = DeserializeJson();
+            ExpenseContainer = GetData();
         }
 
 
-        public ExpenseContainer DeserializeJson()
+        public ExpenseContainer GetData()
         {
             string dataFilePath = GetPath();
             var expensesJson = File.ReadAllText(dataFilePath);
@@ -28,7 +23,7 @@ namespace ExpenseTracker.Services
             return expenses ?? new ExpenseContainer();
         }
 
-        public ExpenseContainer SerializeJson()
+        public ExpenseContainer SaveChanges()
         {
             string dataFilePath = GetPath();
             JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
@@ -37,10 +32,13 @@ namespace ExpenseTracker.Services
             return ExpenseContainer;
         }
 
+
+        // retrieves json's file path and creates the file, if it doesn't exist before returning the path.
         private string GetPath()
         {
             var exeDir = AppContext.BaseDirectory;
             var dataDir = Path.Combine(exeDir, @"..\..\..", "Data");
+
             Directory.CreateDirectory(dataDir);
             var dataFilePath = Path.Combine(dataDir, "Expenses.json");
 

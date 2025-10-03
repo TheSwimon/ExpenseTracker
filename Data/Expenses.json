@@ -1,4 +1,39 @@
 {
   "Expenses": [
+    {
+      "Id": 5,
+      "Description": "gas",
+      "Amount": 50,
+      "Category": "utilities",
+      "CreatedAt": "2025-10-03T17:54:00.2899625+04:00"
+    },
+    {
+      "Id": 7,
+      "Description": "milk and eggs",
+      "Amount": 30,
+      "Category": "groceries",
+      "CreatedAt": "2025-10-03T17:54:20.8343203+04:00"
+    },
+    {
+      "Id": 8,
+      "Description": "electricity bill",
+      "Amount": 200,
+      "Category": "utilities",
+      "CreatedAt": "2025-10-03T17:54:31.4592008+04:00"
+    },
+    {
+      "Id": 9,
+      "Description": "morning latte",
+      "Amount": 15,
+      "Category": "coffee",
+      "CreatedAt": "2025-10-03T18:08:33.022803+04:00"
+    },
+    {
+      "Id": 11,
+      "Description": "doritos",
+      "Amount": 50,
+      "Category": "snacks",
+      "CreatedAt": "2025-10-03T18:08:49.8399072+04:00"
+    }
   ]
 }
